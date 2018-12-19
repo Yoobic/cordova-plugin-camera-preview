@@ -762,22 +762,24 @@
 }
 
 - (void) invokePreviewDispatch:(CIImage*) preview {
-    CGImageRef finalImage = [self.cameraRenderController.ciContext createCGImage:preview fromRect:preview.extent];
-    UIImage *resultImage = [UIImage imageWithCGImage:finalImage];
+    @autoreleasepool {
+      CGImageRef finalImage = [self.cameraRenderController.ciContext createCGImage:preview fromRect:preview.extent];
+      UIImage *resultImage = [UIImage imageWithCGImage:finalImage];
 
-    CGFloat picWidthHelper = resultImage.size.width;
-    CGFloat picHeightHelper = resultImage.size.height;
-    self.previewWidth = [NSString stringWithFormat:@"%f", picWidthHelper];
-    self.previewHeight = [NSString stringWithFormat:@"%f", picHeightHelper];
+      CGFloat picWidthHelper = resultImage.size.width;
+      CGFloat picHeightHelper = resultImage.size.height;
+      self.previewWidth = [NSString stringWithFormat:@"%f", picWidthHelper];
+      self.previewHeight = [NSString stringWithFormat:@"%f", picHeightHelper];
 
-    double radians = [self radiansFromUIImageOrientation:resultImage.imageOrientation];
-    CGImageRef resultFinalImage = [self CGImageRotated:finalImage withRadians:radians];
+      double radians = [self radiansFromUIImageOrientation:resultImage.imageOrientation];
+      CGImageRef resultFinalImage = [self CGImageRotated:finalImage withRadians:radians];
 
-    CGImageRelease(finalImage); // release CGImageRef to remove memory leaks
-    CGFloat quality = 99;
-    self.previewImage = [self getBase64Image:resultFinalImage withQuality:quality];
+      CGImageRelease(finalImage); // release CGImageRef to remove memory leaks
+      CGFloat quality = 99;
+      self.previewImage = [self getBase64Image:resultFinalImage withQuality:quality];
 
-    CGImageRelease(resultFinalImage); // release CGImageRef to remove memory leaks
+      CGImageRelease(resultFinalImage); // release CGImageRef to remove memory leaks
+    }
 }
 
 @end
